@@ -5,7 +5,6 @@
     <header class="main-header">
       <div class="header-content">
         <div class="logo">
-          <span class="logo-icon">🎁</span>
           <h1 class="logo-text">Gift<span>AI</span></h1>
         </div>
 
@@ -77,39 +76,35 @@
           </div>
         </div>
       </Transition>
+
       <Transition name="fade">
           <div v-if="showProfile" class="profile-overlay">
             <div class="profile-card">
               <button class="close-profile" @click="showProfile = false">&times;</button>
-              
               <div class="profile-header">
                 <div class="large-avatar">👤</div>
                 <h2>Korisnički Profil</h2>
                 <p class="user-badge">Premium Član</p>
               </div>
-
               <div class="profile-content">
                 <div class="info-group">
                   <label>Korisničko ime</label>
                   <div class="info-value">{{ username }}</div>
                 </div>
-                
                 <div class="info-group">
                   <label>Status računa</label>
                   <div class="info-value active">Aktivan</div>
                 </div>
-
                 <div class="stats-grid">
                   <div class="stat-box">
                     <span class="stat-num">{{ cart.length }}</span>
                     <span class="stat-label">U košarici</span>
                   </div>
-                <div class="stat-box clickable" @click="showOrdersModal = true">
-                  <span class="stat-num">{{ activeOrders.length + orderHistory.length }}</span>
-                  <span class="stat-label">Narudžbi ⮕</span>
+                  <div class="stat-box clickable" @click="showOrdersModal = true">
+                    <span class="stat-num">{{ activeOrders.length + orderHistory.length }}</span>
+                    <span class="stat-label">Narudžbi ⮕</span>
+                  </div>
                 </div>
-                </div>
-
                 <div class="profile-actions">
                   <button class="edit-btn">Uredi podatke</button>
                   <button @click="logout(); showProfile = false" class="logout-full-btn">Odjavi se</button>
@@ -117,17 +112,16 @@
               </div>
             </div>
           </div>
-        </Transition>
-        <Transition name="fade">
+      </Transition>
+
+      <Transition name="fade">
           <div v-if="showOrdersModal" class="profile-overlay orders-overlay">
             <div class="profile-card orders-modal">
               <button class="close-profile" @click="showOrdersModal = false">&times;</button>
-              
               <div class="profile-header">
                 <div class="large-avatar">📦</div>
                 <h2>Moje Narudžbe</h2>
               </div>
-
               <div class="order-tabs">
                 <button :class="{ active: activeTab === 'active' }" @click="activeTab = 'active'">
                   Aktivno ({{ activeOrders.length }})
@@ -136,7 +130,6 @@
                   Povijest ({{ orderHistory.length }})
                 </button>
               </div>
-
               <div class="orders-list-detailed">
                 <div v-if="activeTab === 'active'">
                   <div v-if="activeOrders.length === 0" class="no-orders">Nema aktivnih narudžbi.</div>
@@ -152,13 +145,96 @@
                     </div>
                   </div>
                 </div>
-
-                <div v-if="activeTab === 'history'">
-                  </div>
               </div>
             </div>
           </div>
-        </Transition>
+      </Transition>
+
+      <Transition name="fade">
+        <div v-if="selectedProduct" class="profile-overlay" @click.self="selectedProduct = null">
+          <div class="profile-card product-detail-modal">
+            <button class="close-profile" @click="selectedProduct = null">&times;</button>
+            
+            <div class="detail-grid">
+              <div class="detail-image">
+              <div class="detail-image">
+                <img 
+                  v-if="selectedProduct.image" 
+                  :src="selectedProduct.image.startsWith('http') ? selectedProduct.image : 'http://127.0.0.1:8000' + selectedProduct.image" 
+                  :alt="selectedProduct.name"
+                >
+                <div v-else class="emoji-img">🎁</div>
+              </div>
+              <div class="detail-info">
+                <span class="category-tag">{{ selectedProduct.category }}</span>
+                <h2>{{ selectedProduct.name }}</h2>
+                <p class="detail-desc">{{ selectedProduct.description }}</p>
+                <div class="price-action">
+                  <span class="detail-price">{{ selectedProduct.price }} €</span>
+                  <button @click="addToCart(selectedProduct)" class="ai-main-btn">Dodaj u košaricu</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="recommended-section">
+              <h3>Slični proizvodi</h3>
+              <div v-if="loadingSimilar" class="mini-spinner-container">
+                <div class="mini-spinner"></div>
+              </div>
+              <div v-for="sim in similarProducts" :key="sim.id" class="sim-card" @click="openProduct(sim)">
+                <img 
+                  v-if="sim.image" 
+                  :src="sim.image.startsWith('http') ? sim.image : 'http://127.0.0.1:8000' + sim.image" 
+                  :alt="sim.name"
+                >
+                <div v-else class="emoji-img-mini">🎁</div>
+                <p>{{ sim.name }}</p>
+                <span>{{ sim.price }} €</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </Transition>
+
+      <section class="ai-hero">
+        <div class="ai-glass-card">
+          <div class="ai-header-flex">
+            <div class="ai-title-group">
+              <span class="ai-sparkle">AI Magija</span>
+              <h2>Personalizirana preporuka</h2>
+              <p>Recite nam nešto o osobi, a naš sustav će pronaći idealan dar.</p>
+            </div>
+          </div>
+
+          <div class="ai-grid-inputs">
+            <div class="ai-field">
+              <label>Odnos</label>
+              <input v-model="aiForm.relationship" placeholder="npr. Djevojka, kolega..." />
+            </div>
+            <div class="ai-field">
+              <label>Povod</label>
+              <input v-model="aiForm.occasion" placeholder="npr. Godišnjica, promocija..." />
+            </div>
+            <div class="ai-field">
+              <label>Interesi</label>
+              <input v-model="aiForm.interests" placeholder="npr. gaming, kuhanje, nakit..." />
+            </div>
+            <div class="ai-field">
+              <label>Budžet (€)</label>
+              <input v-model.number="aiForm.budget" type="number" />
+            </div>
+          </div>
+
+          <div class="ai-actions">
+            <button @click="getAIRecommendations" class="ai-main-btn" :disabled="aiLoading">
+              <span v-if="!aiLoading">Pronađi darove</span>
+              <span v-else class="mini-spinner"></span>
+            </button>
+            <button v-if="isAIResult" @click="fetchProducts" class="reset-link">Prikaži sve proizvode</button>
+          </div>
+        </div>
+      </section>
 
       <section class="catalog-section">
         <h2 class="section-title">Preporučeni darovi</h2>
@@ -168,9 +244,15 @@
         </div>
 
         <div class="product-grid">
-          <div v-for="product in products" :key="product.id" class="product-card">
+          <div v-for="product in products" :key="product.id" class="product-card" @click="openProduct(product)" style="cursor: pointer;">
             <div class="card-image">
-              <span class="emoji-img">🎁</span>
+              <img 
+                v-if="product.image" 
+                :src="product.image.startsWith('http') ? product.image : 'http://127.0.0.1:8000' + product.image" 
+                :alt="product.name" 
+                class="product-img-fluid" 
+              />
+              <span v-else class="emoji-img">🎁</span>
               <div class="category-tag">{{ product.category }}</div>
             </div>
             <div class="card-info">
@@ -178,7 +260,7 @@
               <p class="product-desc">{{ product.description }}</p>
               <div class="card-footer">
                 <span class="price">{{ product.price }} €</span>
-                <button @click="addToCart(product)" class="add-to-cart-btn">Dodaj</button>
+                <button @click.stop="addToCart(product)" class="add-to-cart-btn">Dodaj</button>
               </div>
             </div>
           </div>
@@ -318,6 +400,50 @@ const addToCart = (product) => cart.value.push(product)
 const removeFromCart = (index) => cart.value.splice(index, 1)
 const clearCart = () => { if(confirm("Isprazniti?")) cart.value = [] }
 const cartTotal = computed(() => cart.value.reduce((acc, item) => acc + parseFloat(item.price), 0).toFixed(2))
+
+// --- AI LOGIKA ---
+
+const aiLoading = ref(false)
+const isAIResult = ref(false)
+const aiForm = ref({
+  relationship: '',
+  occasion: '',
+  interests: '',
+  budget: 50
+})
+
+const getAIRecommendations = async () => {
+  aiLoading.value = true
+  try {
+    const response = await axios.post('http://127.0.0.1:8000/api/recommendations/', aiForm.value)
+    products.value = response.data
+    isAIResult.value = true
+  } catch (error) {
+    alert("Greška pri dohvaćanju AI preporuka.")
+  } finally {
+    aiLoading.value = false
+  }
+}
+
+
+
+
+const selectedProduct = ref(null)
+const similarProducts = ref([])
+const loadingSimilar = ref(false)
+
+const openProduct = async (product) => {
+  selectedProduct.value = product
+  loadingSimilar.value = true
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/api/products/${product.id}/similar/`)
+    similarProducts.value = response.data
+  } catch (error) {
+    console.error("Greška pri dohvaćanju sličnih proizvoda");
+  } finally {
+    loadingSimilar.value = false
+  }
+}
 
 onMounted(() => {
   fetchProducts();
@@ -523,11 +649,26 @@ onMounted(() => {
   background: #1e293b; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);
   transition: 0.3s;
 }
-.product-card:hover { transform: translateY(-5px); border-color: #42b983; }
+.product-card:hover .product-img-fluid {
+  transform: scale(1.1); /* Blagi zoom efekt pri hoveru za profesionalniji dojam */
+}
+
+.emoji-img {
+  font-size: 4rem;
+  filter: grayscale(0.5);
+  opacity: 0.7;
+}
 
 .card-image {
-  background: #334155; height: 160px; display: flex; align-items: center;
-  justify-content: center; font-size: 3rem; border-radius: 20px 20px 0 0; position: relative;
+  background: #44607c; /* Svijetla pozadina da tamni proizvodi (poput slušalica) "iskoče" */
+  height: 220px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  overflow: hidden;
+  padding: 15px; /* Dodajemo padding da slika ne dira rubove */
 }
 
 .category-tag {
@@ -545,6 +686,14 @@ onMounted(() => {
 .add-to-cart-btn {
   background: #42b983; border: none; padding: 0.5rem 1rem; border-radius: 8px;
   color: #0f172a; font-weight: 700; cursor: pointer;
+}
+
+.product-img-fluid {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* KLJUČNA PROMJENA: "contain" osigurava da se vidi cijela slika bez rezanja */
+  transition: transform 0.5s ease;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); /* Dodaje blagu sjenu samom proizvodu */
 }
 
 /* --- MODERNIZIRANA KOŠARICA SIDEBAR --- */
@@ -848,6 +997,95 @@ onMounted(() => {
   border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
+
+.product-detail-modal {
+  max-width: 850px !important; 
+  width: 95% !important;
+  padding: 2rem;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr; /* Lijeva strana malo šira, desna uža */
+  gap: 4rem;                          /* GLAVNI RAZMAK IZMEĐU LIJEVO I DESNO */
+  align-items: start;
+}
+
+.detail-image img {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  background: #f1f5f9;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.detail-desc { color: #94a3b8; line-height: 1.6; margin: 1.5rem 0; }
+.detail-price { font-size: 2rem; font-weight: 800; color: #42b983; display: block; margin-bottom: 1rem; }
+
+.recommended-section {
+  padding-left: 2rem;                 /* Dodatni odmak unutar desne kolone */
+  border-left: 1px solid rgba(255, 255, 255, 0.05); /* Suptilna linija razdvajanja */
+  height: 100%;
+}
+
+.recommended-section h3 {
+  margin-bottom: 25px;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.recommended-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;                         /* RAZMAK IZMEĐU KARTICA VERTIKALNO */
+}
+
+.sim-card {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  
+  /* Centriranje sadržaja unutar kartice */
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  box-sizing: border-box;
+}
+
+.sim-card:hover {
+  transform: translateY(-5px);
+  background: rgba(66, 185, 131, 0.08);
+}
+
+.sim-card img, .emoji-img-mini {
+  width: 100%;
+  height: 120px; /* Povećana visina */
+  object-fit: contain;
+  background: #f1f5f9;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+
+.sim-card p {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Reže dugi tekst s tri točke */
+}
+.sim-card span {
+  color: #42b983;
+  font-weight: 800;
+  font-size: 1rem;
+}
 .order-price-row {
   display: flex;
   justify-content: space-between;
@@ -855,10 +1093,74 @@ onMounted(() => {
 }
 .order-price-row .value { color: #42b983; font-size: 1.1rem; }
 
+.ai-hero { margin: 2rem 0 4rem; padding: 0 20px; }
+.ai-glass-card {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(66, 185, 131, 0.3);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.ai-header-flex { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.ai-sparkle { color: #42b983; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
+.ai-visual { font-size: 3rem; filter: drop-shadow(0 0 10px #42b983); }
+.ai-grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; }
+.ai-field label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px; font-weight: 600; }
+.ai-field input {
+  width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px; border-radius: 12px; color: white; transition: 0.3s;
+}
+.ai-field input:focus { border-color: #42b983; outline: none; background: rgba(15, 23, 42, 0.8); }
+.ai-actions { margin-top: 2rem; display: flex; align-items: center; gap: 20px; }
+.ai-main-btn {
+  background: #42b983; color: #0f172a; border: none; padding: 14px 35px;
+  border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.3s;
+}
+.ai-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(66, 185, 131, 0.3); }
+.reset-link { background: none; border: none; color: #94a3b8; cursor: pointer; text-decoration: underline; font-size: 0.9rem; }
+
+.mini-spinner {
+  width: 20px; height: 20px; border: 3px solid rgba(0,0,0,0.1);
+  border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 
 /* Animacije */
 .slide-enter-active, .slide-leave-active { transition: 0.4s; }
 .slide-enter-from, .slide-leave-to { transform: translateX(100%); }
 .fade-enter-active, .fade-leave-active { transition: 0.2s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(-10px); }
+
+.product-detail-modal {
+  max-width: 800px !important;
+  width: 95% !important;
+  padding: 2rem;
+}
+
+.detail-image img {
+  width: 100%;
+  border-radius: 15px;
+  background: #f1f5f9;
+}
+.detail-desc { color: #94a3b8; margin: 1.5rem 0; }
+.detail-price { font-size: 2rem; font-weight: 800; color: #42b983; display: block; margin-bottom: 1rem; }
+
+.sim-card {
+  width: 100%;
+  max-width: 240px; /* Prilagodi prema želji, ovo drži kartice kompaktnima */
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+.sim-card img { width: 100%; height: 60px; object-fit: contain; }
+.sim-card p { font-size: 0.7rem; margin: 5px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
