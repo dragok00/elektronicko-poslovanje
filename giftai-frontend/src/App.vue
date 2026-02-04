@@ -646,11 +646,21 @@ onMounted(() => {
 }
 
 .product-card {
-  background: #1e293b; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);
-  transition: 0.3s;
+  background: #1e293b; 
+  border-radius: 24px; 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
 }
+.product-card:hover {
+  transform: translateY(-10px);
+  background: #243146;
+  border-color: rgba(66, 185, 131, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(66, 185, 131, 0.1);
+}
+
 .product-card:hover .product-img-fluid {
-  transform: scale(1.1); /* Blagi zoom efekt pri hoveru za profesionalniji dojam */
+  transform: scale(1.1) rotate(2deg); /* Lagani okret za dinamičnost */
 }
 
 .emoji-img {
@@ -660,15 +670,13 @@ onMounted(() => {
 }
 
 .card-image {
-  background: #44607c; /* Svijetla pozadina da tamni proizvodi (poput slušalica) "iskoče" */
-  height: 220px; 
+  background: #f1f5f9; /* Svijetla podloga je ključna za 'multiply' blend */
+  height: 240px; 
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20px 20px 0 0;
+  padding: 20px;
   position: relative;
-  overflow: hidden;
-  padding: 15px; /* Dodajemo padding da slika ne dira rubove */
 }
 
 .category-tag {
@@ -691,9 +699,10 @@ onMounted(() => {
 .product-img-fluid {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain; /* KLJUČNA PROMJENA: "contain" osigurava da se vidi cijela slika bez rezanja */
+  object-fit: contain;
+  /* OVA LINIJA SPAŠAVA STVAR: */
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
   transition: transform 0.5s ease;
-  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); /* Dodaje blagu sjenu samom proizvodu */
 }
 
 /* --- MODERNIZIRANA KOŠARICA SIDEBAR --- */
@@ -1013,13 +1022,12 @@ onMounted(() => {
 
 .detail-image img {
   width: 100%;
-  height: 300px;
+  height: 400px;
   object-fit: contain;
   background: #f1f5f9;
-  border-radius: 15px;
-  padding: 15px;
+  border-radius: 24px;
+  padding: 30px;
 }
-
 .detail-desc { color: #94a3b8; line-height: 1.6; margin: 1.5rem 0; }
 .detail-price { font-size: 2rem; font-weight: 800; color: #42b983; display: block; margin-bottom: 1rem; }
 
@@ -1042,24 +1050,17 @@ onMounted(() => {
 }
 
 .sim-card {
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 20px;
-  border-radius: 20px;
-  text-align: center;
+  background: #1e293b;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-  
-  /* Centriranje sadržaja unutar kartice */
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  box-sizing: border-box;
+  padding: 15px;
+  border-radius: 20px;
+  transition: 0.3s;
 }
 
 .sim-card:hover {
-  transform: translateY(-5px);
-  background: rgba(66, 185, 131, 0.08);
+  background: #243146;
+  border-color: #42b983;
+  transform: scale(1.03);
 }
 
 .sim-card img, .emoji-img-mini {
@@ -1140,11 +1141,6 @@ onMounted(() => {
   padding: 2rem;
 }
 
-.detail-image img {
-  width: 100%;
-  border-radius: 15px;
-  background: #f1f5f9;
-}
 .detail-desc { color: #94a3b8; margin: 1.5rem 0; }
 .detail-price { font-size: 2rem; font-weight: 800; color: #42b983; display: block; margin-bottom: 1rem; }
 
@@ -1161,6 +1157,14 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
 }
-.sim-card img { width: 100%; height: 60px; object-fit: contain; }
+.sim-card img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+  background: #f1f5f9; /* Isti trik kao na glavnoj kartici */
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
 .sim-card p { font-size: 0.7rem; margin: 5px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
