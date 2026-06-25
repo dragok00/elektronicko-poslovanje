@@ -69,36 +69,6 @@ def recommend_gifts(request):
     serializer = ProductSerializer(recommended_products, many=True)
     return Response(serializer.data)
 
-from django.db.models import Q
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_similar_products(request, product_id):
-    try:
-        source_product = Product.objects.get(id=product_id)
-        
-        mock_prefs = {
-            'interests': source_product.interests,
-            'occasion': source_product.occasion,
-            'budget': float(source_product.price) * 1.3,
-            'relationship': ''
-        }
-        similar = get_local_recommendations(mock_prefs).exclude(id=source_product.id)[:4]
-        
-        if not similar.exists():
-            similar = Product.objects.filter(
-                category=source_product.category
-            ).exclude(id=source_product.id).order_by('?')[:4]
-            
-        if not similar.exists():
-            similar = Product.objects.exclude(id=source_product.id).order_by('?')[:4]
-
-        serializer = ProductSerializer(similar, many=True)
-        return Response(serializer.data)
-    except Product.DoesNotExist:
-        return Response([], status=404)
-    
-
 @api_view(['GET'])
 def get_similar_products(request, pk):
     try:

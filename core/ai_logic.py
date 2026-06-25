@@ -7,11 +7,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 from django.db.models import Case, When
 from .models import Product
 
-# Preuzimanje potrebnih resursa (samo pri prvom pokretanju)
-nltk.download('wordnet')
-nltk.download('stopwords')
+def _ensure_nltk_resources():
+    """Preuzima NLTK resurse samo ako vec ne postoje (umjesto pri svakom importu)."""
+    for resource, path in (('wordnet', 'corpora/wordnet'), ('stopwords', 'corpora/stopwords')):
+        try:
+            nltk.data.find(path)
+        except LookupError:
+            nltk.download(resource)
+
 
 def preprocess_text(text):
+    _ensure_nltk_resources()
     lemmatizer = WordNetLemmatizer()
     stop_words = set(stopwords.words('english')) # Možeš dodati i hrvatske ako nađeš listu
     
