@@ -243,6 +243,7 @@
           <p>Učitavanje ponude...</p>
         </div>
 
+        
         <div class="product-grid">
           <div v-for="product in products" :key="product.id" class="product-card" @click="openProduct(product)" style="cursor: pointer;">
             <div class="card-image">
@@ -641,8 +642,12 @@ onMounted(() => {
 
 /* KATALOG */
 .product-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 20px;
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem; 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 20px;
 }
 
 .product-card {
@@ -651,7 +656,12 @@ onMounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
+  
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
+
 .product-card:hover {
   transform: translateY(-10px);
   background: #243146;
@@ -660,7 +670,7 @@ onMounted(() => {
 }
 
 .product-card:hover .product-img-fluid {
-  transform: scale(1.1) rotate(2deg); /* Lagani okret za dinamičnost */
+  transform: scale(1.1) rotate(2deg);
 }
 
 .emoji-img {
@@ -670,13 +680,14 @@ onMounted(() => {
 }
 
 .card-image {
-  background: #f1f5f9; /* Svijetla podloga je ključna za 'multiply' blend */
+  background: #f1f5f9;
   height: 240px; 
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .category-tag {
@@ -684,16 +695,54 @@ onMounted(() => {
   color: #0f172a; font-size: 0.6rem; font-weight: 800; padding: 3px 8px; border-radius: 4px;
 }
 
-.card-info { padding: 1.5rem; }
-.product-title { margin: 0; font-size: 1.2rem; }
-.product-desc { color: #94a3b8; font-size: 0.85rem; margin: 10px 0; height: 40px; }
+.card-info { 
+  padding: 1.5rem; 
+  /* Pretvaramo info dio u flex kako bismo upravljali opisom i footerom */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+}
 
-.card-footer { display: flex; justify-content: space-between; align-items: center; }
-.price { font-weight: 800; color: #42b983; }
+.product-title { 
+  margin: 0; 
+  font-size: 1.2rem; 
+}
+
+.product-desc { 
+  color: #94a3b8; 
+  font-size: 0.85rem; 
+  margin: 10px 0 20px 0; 
+  
+  flex-grow: 1; 
+  
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-top: auto; /* Gura cijeli footer na samo dno kartice */
+  padding-top: 10px;
+}
+
+.price { 
+  font-weight: 800; 
+  color: #42b983; 
+}
 
 .add-to-cart-btn {
-  background: #42b983; border: none; padding: 0.5rem 1rem; border-radius: 8px;
-  color: #0f172a; font-weight: 700; cursor: pointer;
+  background: #42b983; 
+  border: none; 
+  padding: 0.5rem 1rem; 
+  border-radius: 8px;
+  color: #0f172a; 
+  font-weight: 700; 
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .product-img-fluid {
@@ -810,6 +859,12 @@ onMounted(() => {
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
 }
 
 .mini-remove:hover {
@@ -1157,14 +1212,18 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
 }
+
 .sim-card img {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: 100px;
   object-fit: contain;
-  background: #f1f5f9; /* Isti trik kao na glavnoj kartici */
+  background: #f1f5f9;
   border-radius: 12px;
   padding: 10px;
-  margin-bottom: 10px;
+  margin: 0 auto 10px auto;
+  display: block;
 }
+
 .sim-card p { font-size: 0.7rem; margin: 5px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
